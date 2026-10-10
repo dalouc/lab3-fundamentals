@@ -4,14 +4,10 @@ from typing import Any
 import matplotlib.pyplot as plt
 import requests
 
-API = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_bsco_m"
-QUERY = {
-    "format": "JSON",
-    "lang": "en",
-    "indic": "BS-CSMCI",
-    "s_adj": "SA",
-    "unit": "BAL",
-}
+URL = (
+    "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/ei_bsco_m"
+    "?format=JSON&lang=en&indic=BS-CSMCI&s_adj=SA&unit=BAL"
+)
 
 EU = "EU27_2020"
 SPAIN = "ES"
@@ -53,7 +49,7 @@ def report(title: str, labels: tuple[str, ...], values: list[float]) -> None:
 
 
 def main() -> None:
-    answer = requests.get(API, params=QUERY, timeout=60)
+    answer = requests.get(URL, timeout=60)
     answer.raise_for_status()
     dataset: dict[str, Any] = answer.json()
 
