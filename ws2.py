@@ -9,9 +9,22 @@ MARIA = "40683"
 YEARS = ["2021", "2022", "2023", "2024", "2025"]
 TOP = 10
 CHARTS = Path("figures")
+BIRTHS = "https://api.idescat.cat/taules/v2/naix/364/389/cat/data"
+FEMALE = "F"
 
 
 def main() -> None:
+    reply = requests.get(BIRTHS, params={"lang": "en"}, timeout=60)
+    reply.raise_for_status()
+    live_births: dict[str, Any] = reply.json()
+    years: list[str] = live_births["dimension"]["YEAR"]["category"]["index"]
+    sexes: list[str] = live_births["dimension"]["SEX"]["category"]["index"]
+    cells: list[float] = live_births["value"]
+    girls = [
+        round(cells[years.index(year) * len(sexes) + sexes.index(FEMALE)])
+        for year in YEARS
+    ]
+
     reply = requests.get(
         SERVICE, params={"id": MARIA, "class": "t", "lang": "en"}, timeout=60
     )
@@ -30,6 +43,7 @@ def main() -> None:
     per_thousand_female = [float(by_year[year]["pos1"]["w"]["sex"]) for year in YEARS]
 
     figures = [
+        ("Girls born in Catalonia", "Girls", girls, "ws2_women_born.png"),
         ("Rank of MARIA among all newborns", "Rank", total_rank, "ws2_rank_total.png"),
         (
             "Rank of MARIA among newborn girls",
@@ -52,7 +66,11 @@ def main() -> None:
         ),
     ]
 
-    print("Year   Rank  Rank(F)  Girls  Per 1000  Per 1000 (F)")
+    print("Year   Girls born in Catalonia")
+    for year, number in zip(YEARS, girls, strict=True):
+        print(f"{year}  {number:23d}")
+
+    print("\nYear   Rank  Rank(F)  Girls  Per 1000  Per 1000 (F)")
     for position, year in enumerate(YEARS):
         print(
             f"{year}  {total_rank[position]:5d}  {female_rank[position]:7d}"

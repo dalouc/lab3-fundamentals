@@ -51,17 +51,26 @@ per territory, and the three requested bar charts are built from there:
 
 ## Exercise 2 — Idescat
 
-Two requests to the `dades` operation of the `nadons` subservice, for
+Three requests. The first one goes to the `taules` service, table
+[`naix/364/389`](https://api.idescat.cat/taules/v2/naix/364/389/cat/data?lang=en)
+(*live births by newborn's sex, Catalonia*), as indicated by the teacher: its
+answer is [JSON-stat 2.0](https://json-stat.org/) over the cube `year × geo ×
+sex × concept`, and since every dimension but `year` and `sex` has a single
+category, the female cell of a year sits at `year_index * 3 + sex_index`. The
+other two go to the `dades` operation of the `nadons` subservice, for
 identifier `40683` — the female given name MARIA. `class=t` returns the yearly
 series for Catalonia; `class=com` breaks the latest available year down by
 county. Five figures are reported for the last five available years
 (2021-2025), each one as a histogram with one bar per year:
 
-1. Total rank of the name among all newborns.
+1. Total number of women born in Catalonia.
 2. Rank of the name among female newborns.
 3. Frequency of the name (newborn girls named MARIA).
 4. Newborns named MARIA per thousand newborns.
 5. Newborns named MARIA per thousand female newborns.
+
+The rank of MARIA among all newborns is reported as well, next to the rank
+among girls.
 
 Plus the place where most MARIAs were born, as a bar chart of the ten leading
 counties. Idescat breaks these statistics down to provinces, territorial plan
